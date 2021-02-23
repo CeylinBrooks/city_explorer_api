@@ -16,7 +16,9 @@ function dataCallback(request, response){
   response.send(weath);
 }
 
-app.get('weather', handleWeather);
+app.get('/weather', handleWeather);
+app.get('/location', handleLocation)
+
 function handleWeather(req, res){
   console.log
   const jsonData = require('.data/weather.json');
