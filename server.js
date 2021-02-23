@@ -16,11 +16,26 @@ function dataCallback(request, response){
   response.send(weath);
 }
 
-app.get ('location',)
+// Routes
+app.get ('location', handleLocation);
+function handleLocation(req, res){
+  console.log(req.query);
+  const locationData = require('.data/location.json');
+
+  const output = new Location(locationData, req.query.city);
+  res.send (output);
+}
+
+function Location (locationData, cityDescrip){
+  this.search_query = cityName;
+  this.formattted_query = locationData[0].display_name;
+  this.latitude = locationData[0].lat;
+  this.longitude = locationData[0].lon;
+}
 
 app.get('weather', handleWeather);
 function handleWeather(req, res){
-  console.log
+  //console.log
   const jsonData = require('.data/weather.json');
   const result = new Weather (jsonData, req.query);
   res.send(result);
