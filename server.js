@@ -18,6 +18,7 @@ function dataCallback(request, response){
 
 app.get('weather', handleWeather);
 function handleWeather(req, res){
+  console.log
   const jsonData = require('.data/weather.json');
   const result = new Weather (jsonData, req.query);
   res.send(result);
@@ -25,7 +26,12 @@ function handleWeather(req, res){
 
 function Weather(jsonData, weatherStatus){
   this.
+  this.
+  this.
 }; 
+
+
+
 
 
 app.listen(3001,()=> console.log(`Now listening on PORT 3001`));
