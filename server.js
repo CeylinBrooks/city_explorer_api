@@ -16,6 +16,8 @@ function dataCallback(request, response){
   response.send(weath);
 }
 
+app.get ('location',)
+
 app.get('weather', handleWeather);
 function handleWeather(req, res){
   console.log
