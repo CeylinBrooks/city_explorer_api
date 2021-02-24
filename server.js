@@ -2,12 +2,14 @@
 
 const express = require('express');
 const cors = require('cors');
+const superagent = require('superagent');
 require('dotenv').config();
 
 const app = express();
 app.use(cors());
 
 const PORT = process.env || 3001;
+const LOCATION_API_KEY = process.env.LOCATION_API_KEY;
 console.log(process.env);
 
 app.get('/data', dataCallback);
@@ -16,21 +18,29 @@ function dataCallback(request, response){
   response.send(weath);
 }
 
-<<<<<<< HEAD
 app.get('/weather', handleWeather);
 app.get('/location', handleLocation)
 app.get('/yelp', handleYelp);
 
+
 function handleWeather(req, res){
-=======
+
 // Routes
 app.get ('location', handleLocation);
 function handleLocation(req, res){
-  console.log(req.query);
-  const locationData = require('.data/location.json');
+  const city = req.query.city;
+  const url = ``;
+  superagent.get(url).then(returnedData => {
+    console.log(returnedData.body);
+    const output = new Location(returnedData.body, req.query.city);
+  });
 
-  const output = new Location(locationData, req.query.city);
-  res.send (output);
+//   console.log(req.query);
+//   const locationData = require('.data/location.json');
+
+//   const output = new Location(locationData, req.query.city);
+//   res.send (output);
+// }
 }
 
 function Location (locationData, cityDescrip){
@@ -61,9 +71,8 @@ function Restaurant(object){
 app.get('weather', handleWeather);
 function handleWeather(req, res){
   //console.log
->>>>>>> 5e58678dcf058c85693f120474ac2a01cc062c8e
   const jsonData = require('.data/weather.json');
-  for ()
+  for (let i = 0; i < )
   const result = new Weather (jsonData, req.query);
   res.send(result);
 }
@@ -74,29 +83,6 @@ function Weather(jsonData, weatherStatus){
   this.
 }; 
 
-//
-
-// ```
-// [
-//   {
-//     "forecast": "Partly cloudy until afternoon.",
-//     "time": "Mon Jan 01 2001"
-//   },
-//   {
-//     "forecast": "Mostly cloudy in the morning.",
-//     "time": "Tue Jan 02 2001"
-//   },
-//   ...
-// ]
-// ```
-//
-function handleLocation(req,res){
-    this.search_query = 'seattle';
-    this.formatted_query = "Seattle, WA, USA";
-    this.latitude = '47.606210';
-    this.longitude = '-122.332071';
- 
-}
 
 function handleYelp(req,res)
 
