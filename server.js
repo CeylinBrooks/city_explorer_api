@@ -45,7 +45,7 @@ function handleWeather(req, res){
     response.send(output);
   }).catch(error => {
     console.log(error);
-    response.status(400).send('Houston we have a problem!');
+    response.status(500).send('Houston we have a problem!');
   })
 };
 
@@ -59,7 +59,7 @@ function handleParks(req, res){
     response.send(output);
   }).catch(error => {
     console.log(error);
-    response.status(400).send('Houston we have a problem!');
+    response.status(500).send('Houston we have a problem!');
   })
 ;}
 
