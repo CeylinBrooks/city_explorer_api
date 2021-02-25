@@ -3,11 +3,19 @@
 const express = require('express');
 const cors = require('cors');
 const superagent = require('superagent');
-const { response } = require('express');
 require('dotenv').config();
+const pg = require('pg');
+
+//APP
+const client = new pg.Client(process.env.DATABASE_URL);
+client.on('error', error => console.log(error));
+
 
 const app = express();
 app.use(cors());
+
+
+
 
 const PORT = process.env || 3001;
 const LOCATION_API_KEY = process.env.LOCATION_API_KEY;
@@ -25,7 +33,7 @@ app.get('/location', handleLocation)
 
 function handleLocation(req, res){
   const city = req.query.city;
-  const url = ``;
+  const url = `https://us1.locationiq.com/v1/search.php?key=${LOCATION_API_KEY}&q=${city}&format=json`;
   superagent.get(url).then(returnedData => {
     console.log(returnedData.body);
     const output = new Location(returnedData.body, req.query.city);
@@ -41,7 +49,7 @@ function handleWeather(req, res){
   const url = ``;
   superagent.get(url).then(returnedWeather => {
     console.log(returnedWeather.body);
-    const output = new Park(returnedWeather.body,req.query. ?? );
+    const output = new Weather(returnedWeather.body,req.query. ?? );
     response.send(output);
   }).catch(error => {
     console.log(error);
@@ -96,24 +104,12 @@ function Restaurant(object){
   this.cuisines = object.cuisines;
 }
 
-// app.get('weather', handleWeather);
-// function handleWeather(req, res){
-//   //console.log
-//   const jsonData = require('.data/weather.json');
-//   for (let i = 0; i < )
-//   const result = new Weather (jsonData, req.query);
-//   res.send(result);
-// }
-
-// function Weather(jsonData, weatherStatus){
-//   this.forecast = jsonData.weather.desription;
-//   this.
-//   this.
-// }; 
 
 
-//function handleYelp(req,res)
+client.connect()
+  .then(() => {
+    app.listen(3001,()=> console.log(`Now listening on PORT 3001`));
+  });
 
-app.listen(3001,()=> console.log(`Now listening on PORT 3001`));
 
 
