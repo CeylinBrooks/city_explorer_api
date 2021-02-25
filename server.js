@@ -32,7 +32,7 @@ function handleLocation(req, res){
     response.send(output);
   }).catch(error => {
     console.log(error);
-    response.status(400).send('Houston we have a problem!');
+    response.status(500).send('Houston we have a problem!');
   });
 }
 
@@ -45,7 +45,7 @@ function handleWeather(req, res){
     response.send(output);
   }).catch(error => {
     console.log(error);
-    response.status(400).send('Houston we have a problem!');
+    response.status(500).send('Houston we have a problem!');
   })
 };
 
@@ -59,7 +59,7 @@ function handleParks(req, res){
     response.send(output);
   }).catch(error => {
     console.log(error);
-    response.status(400).send('Houston we have a problem!');
+    response.status(500).send('Houston we have a problem!');
   })
 ;}
 
@@ -115,3 +115,5 @@ function Restaurant(object){
 //function handleYelp(req,res)
 
 app.listen(3001,()=> console.log(`Now listening on PORT 3001`));
+
+
