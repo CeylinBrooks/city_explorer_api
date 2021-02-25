@@ -25,7 +25,7 @@ app.get('/location', handleLocation)
 
 function handleLocation(req, res){
   const city = req.query.city;
-  const url = ``;
+  const url = `https://us1.locationiq.com/v1/search.php?key=${LOCATION_API_KEY}&q=${city}&format=json`;
   superagent.get(url).then(returnedData => {
     console.log(returnedData.body);
     const output = new Location(returnedData.body, req.query.city);
