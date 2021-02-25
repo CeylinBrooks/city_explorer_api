@@ -12,6 +12,7 @@ app.use(cors());
 const PORT = process.env || 3001;
 const LOCATION_API_KEY = process.env.LOCATION_API_KEY;
 const WEATHER_API_KEY = process.env.WEATHER_API_KEY;
+const PARK_API_KEY = process.env.PARK_API_KEY;
 console.log(process.env);
 
 
@@ -93,23 +94,14 @@ function restaurantHandler(req,res){
 function Restaurant(object){
   this.name = object.name;
   this.area = object.location.locality_verbose;
-  this.cuisines = object.cuisines;
+  this.park = object.cuisines;
 }
 
-// app.get('weather', handleWeather);
-// function handleWeather(req, res){
-//   //console.log
-//   const jsonData = require('.data/weather.json');
-//   for (let i = 0; i < )
-//   const result = new Weather (jsonData, req.query);
-//   res.send(result);
-// }
-
-// function Weather(jsonData, weatherStatus){
-//   this.forecast = jsonData.weather.desription;
-//   this.
-//   this.
-// }; 
+function Weather(jsonData, weatherStatus){
+    this.forecast = jsonData.weather.desription;
+    this.
+    this.
+  }; 
 
 
 //function handleYelp(req,res)
