@@ -6,6 +6,6 @@ Estimate of time needed to complete: 1 1/2 HR
 
 Start time: 1700
 
-Finish time: _____
+Finish time: 1830
 
-Actual time needed to complete: _____
+Actual time needed to complete: 1 1/2 HR
