@@ -25,7 +25,7 @@ app.get('/location', handleLocation);
 app.get('/weather', handleWeather);
 app.get('/parks', handleParks);
 app.get('/movies', handleMovies);
-// app.get('/yelp', handleYelp);
+app.get('/yelp', handleYelp);
 
 function handleLocation(req, res) {
   const sqlQueryString = 'SELECT * FROM cities WHERE search_query=$1';
@@ -49,8 +49,6 @@ function handleLocation(req, res) {
       }
     });
 }
-
-
 
 
 function handleWeather(req, res) {
@@ -98,21 +96,12 @@ function handleMovies(req, res) {
     });
 }
 
-
-
-
-
-// app.get('/restaurants', restaurantHandler);
-
-// function restaurantHandler(req,res){
-//   const restaurantJSON = require('.data/restaturants.json');
-
-//   const output = [];
-//   for (let i = 0; i < restaurantJSON.nearby_restaurants.length; i++){
-//     output.push(new Restaurant(restaurantJSON.nearby_restaurants[i].restaurant));
-//   }
-//   res.send(output);
-// }
+function handleYelp (req,res) {
+  const offset = (req.query.page) * 5;
+  const lat = request.query.latitude;
+  const lon = request.query.longitude;
+  cons
+}
 
 //Objects
 
@@ -141,7 +130,7 @@ function Movie(movieData){
   this.released_on = movieData.release_date;
 }
 
-// function Restaurant(object){
+// function Yelp (object){
 //   this.name = object.name;
 //   this.area = object.location.locality_verbose;
 //   this.park = object.cuisines;
