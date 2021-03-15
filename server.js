@@ -31,7 +31,7 @@ app.get('/location', handleLocation);
 
 // Routes
 
-function handleLocation(req, res){
+function handleLocation(req, res) {
   const city = req.query.city;
   const url = `https://us1.locationiq.com/v1/search.php?key=${GEOCODE_API_KEY}&q=${city}&format=json`;
   superagent.get(url).then(returnedData => {
@@ -45,7 +45,7 @@ function handleLocation(req, res){
   });
 }
 
-function handleWeather(req, res){
+function handleWeather(req, res) {
   console.log(req.query);
   let lat = req.query.latitude;
   let lon = req.query.longitude;
@@ -53,7 +53,7 @@ function handleWeather(req, res){
   superagent.get(url).then(returnedWeather => {
     console.log(returnedWeather.body.data);
     // const output = new Weather(returnedWeather.body,req.query. ?? );
-    const output = {test: 'test'};
+    const output = { test: 'test' };
     res.send(output);
   }).catch(error => {
     console.log(error);
@@ -81,39 +81,39 @@ function handleWeather(req, res){
 // app.get('/restaurants', restaurantHandler);
 
 // function restaurantHandler(req,res){
-  //   const restaurantJSON = require('.data/restaturants.json');
-  
-  //   const output = [];
-  //   for (let i = 0; i < restaurantJSON.nearby_restaurants.length; i++){
-    //     output.push(new Restaurant(restaurantJSON.nearby_restaurants[i].restaurant));
-    //   }
-    //   res.send(output);
-    // }
-    
-    // function Restaurant(object){
-      //   this.name = object.name;
-      //   this.area = object.location.locality_verbose;
-      //   this.park = object.cuisines;
-    }
-    
-    function Location (locationData, cityDescrip){
-      this.search_query = cityDescrip;
-      this.formattted_query = locationData.display_name;
-      this.latitude = locationData.lat;
-      this.longitude = locationData.lon;
-    }
-    function Weather(jsonData, weatherStatus){
-        this.search_query = jsonData.weather.desription;
-        this.formattted_query = weatherStatus;
-        this.latitude = jsonData.lat;
-        this.longitude = jsonData.lon;
+//   const restaurantJSON = require('.data/restaturants.json');
 
-      };
-    
-    
+//   const output = [];
+//   for (let i = 0; i < restaurantJSON.nearby_restaurants.length; i++){
+//     output.push(new Restaurant(restaurantJSON.nearby_restaurants[i].restaurant));
+//   }
+//   res.send(output);
+// }
+
+// function Restaurant(object){
+//   this.name = object.name;
+//   this.area = object.location.locality_verbose;
+//   this.park = object.cuisines;
+// }
+
+function Location(locationData, cityDescrip) {
+  this.search_query = cityDescrip;
+  this.formattted_query = locationData.display_name;
+  this.latitude = locationData.lat;
+  this.longitude = locationData.lon;
+}
+function Weather(jsonData, weatherStatus) {
+  this.search_query = jsonData.weather.desription;
+  this.formattted_query = weatherStatus;
+  this.latitude = jsonData.lat;
+  this.longitude = jsonData.lon;
+
+};
+
+
 client.connect()
   .then(() => {
-    app.listen(PORT,()=> console.log(`Now listening on ${PORT}`));
+    app.listen(PORT, () => console.log(`Now listening on ${PORT}`));
   });
 
 
