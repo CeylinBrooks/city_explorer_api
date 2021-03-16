@@ -5,7 +5,7 @@ const cors = require('cors');
 const superagent = require('superagent');
 require('dotenv').config();
 const pg = require('pg');
-const { response } = require('express');
+// const { res, req } = require('express');
 
 //APP
 const app = express();
@@ -17,18 +17,26 @@ const PORT = process.env.PORT || 3001;
 const GEOCODE_API_KEY = process.env.GEOCODE_API_KEY;
 const WEATHER_API_KEY = process.env.WEATHER_API_KEY;
 const PARKS_API_KEY = process.env.PARKS_API_KEY;
+const MOVIE_API_KEY = process.env.MOVIE_API_KEY;
+const YELP_API_KEY = process.env.YELP_API_KEY;
+
 
 
 
 // Routes
+app.get('/', hello);
 app.get('/location', handleLocation);
 app.get('/weather', handleWeather);
 app.get('/parks', handleParks);
 app.get('/movies', handleMovies);
 app.get('/yelp', handleYelp);
 
+function hello(req,res) {
+  res.send('hello world!');
+}
+
 function handleLocation(req, res) {
-  const sqlQueryString = 'SELECT * FROM cities WHERE search_query=$1';
+  const sqlQueryString = 'SELECT * FROM city_explorer_table WHERE search_query=$1;';
   const sqlQueryArrays = [req.query.city];
   client.query(sqlQueryString, sqlQueryArrays)
     .then(result => {
@@ -38,10 +46,13 @@ function handleLocation(req, res) {
         const city = req.query.city;
         const url = `https://us1.locationiq.com/v1/search.php?key=${GEOCODE_API_KEY}&q=${city}&format=json`;
         superagent.get(url).then(returnedData => {
-          const output = new Location(city, req.query.city);
-          res.send(output);
-          const sqlString = 'INSERT INTO cities (search_query. formatted_query. latitude, longtitude) VALUES($1, $2, $3, $4)';
+          const output = new Location(returnedData.body, req.query.city);
+          // res.send(output);
+          const sqlString = 'INSERT INTO city_explorer_table (search_query, formatted_query, latitude, longitude) VALUES($1, $2, $3, $4);';
           const sqlArray = [city, returnedData.body[0].display_name, returnedData.body[0].lat, returnedData.body[0].lon];
+          client.query(sqlString, sqlArray).then(() => {
+            res.send(output);
+          });
         }).catch(error => {
           console.log(error);
           res.status(500).send('Houston we have a problem!');
@@ -54,11 +65,13 @@ function handleLocation(req, res) {
 function handleWeather(req, res) {
   let lat = req.query.latitude;
   let lon = req.query.longitude;
+  console.log(lat, lon);
   const url = `https://api.weatherbit.io/v2.0/forecast/daily?key=${WEATHER_API_KEY}&lat=${lat}&lon=${lon}`;
   superagent.get(url).then(returnedData => {
     const output = returnedData.body.data.map(weatherInfo => {
       return new Weather(weatherInfo);
     });
+    console.log(output);
     res.send(output);
   }).catch(error => {
     console.log(error);
@@ -71,8 +84,8 @@ function handleParks(req, res) {
   const url = `https://developer.nps.gov/api/v1/parks?limit=2&start=0&q=${park}&sort=&api_key=${PARKS_API_KEY}`;
   superagent.get(url)
     .then(returnedPark => {
-      const parksArray = parksArray.body.data;
-      const output = parksArray.map(parkValue = new parksArray(parkValue));
+      const parksArray = returnedPark.body.data;
+      const output = parksArray.map(parkValue => new Park(parkValue));
       res.send(output);
     })
     .catch(error => {
@@ -83,11 +96,12 @@ function handleParks(req, res) {
 
 function handleMovies(req, res) {
   const movie = req.query.search_query;
-  const url = `https://api.themoviedb.org/3/movie/550?api_key=${PARKS_API_KEY}&query=${movie}`;
+  const url = `https://api.themoviedb.org/3/movie/550?api_key=${MOVIE_API_KEY}&query=${movie}`;
   superagent.get(url)
     .then(returnedData => {
+      console.log(returnedData.body);
       const movieArray = returnedData.body.results;
-      const output = movieArray.map(movie => new Movie(movie));
+      const output = movieArray.results.map(moviesInfo => new Movie(moviesInfo));
       res.send(output);
     })
     .catch(error => {
@@ -96,11 +110,20 @@ function handleMovies(req, res) {
     });
 }
 
-function handleYelp (req,res) {
-  const offset = (req.query.page) * 5;
-  const lat = request.query.latitude;
-  const lon = request.query.longitude;
-  cons
+function handleYelp(req, res) {
+  const offset = (req.query.page - 1) * 5;
+  const lat = req.query.latitude;
+  const lon = req.query.longitude;
+  const url = `https://api.yelp.com/v3/businesses/search?term=restaurant&limit=5&latitude=${lat}&longitude=${lon}&offset=${offset}`;
+  superagent.get(url).set('authorization', `bearer ${YELP_API_KEY}`)
+    .then(result => {
+      const restaurantArray = result.body.businesses;
+      const output = restaurantArray.map(businesses => new Yelp(businesses));
+      res.send(output);
+    }).catch(error => {
+      console.log(error);
+      res.status(500).send('Houston we have a problem!');
+    });
 }
 
 //Objects
@@ -120,21 +143,32 @@ function Weather(jsonData, weatherStatus) {
 
 }
 
-function Movie(movieData){
+function Movie(movieData) {
   this.title = movieData.original_title;
   this.overview = movieData.overview;
   this.average_votes = movieData.vote_average;
   this.total_votes = movieData.vote_count;
-  this.image_url = `https://www.themoviedb.org/t/p/w600_and_h900_bestv2${object.poster_path}`;
+  this.image_url = `https://www.themoviedb.org/t/p/w600_and_h900_bestv2${movieData.poster_path}`;
   this.popularity = movieData.popularity;
   this.released_on = movieData.release_date;
 }
 
-// function Yelp (object){
-//   this.name = object.name;
-//   this.area = object.location.locality_verbose;
-//   this.park = object.cuisines;
-// }
+function Park(parkInformation) {
+  this.name = parkInformation.name;
+  this.address = `${parkInformation}.addresses[0].line1} ${parkInformation[0].city} ${parkInformation}.addresses[0].stateCode} ${parkInformation.addresses[0].postalCode}`;
+  this.fee = parkInformation = parkInformation.desription;
+  this.url = parkInformation.url;
+}
+
+
+function Yelp(yelpStuff) {
+  this.name = yelpStuff.name;
+  this.image_url = yelpStuff.image_url;
+  this.price = yelpStuff.price;
+  this.rating = yelpStuff.rating;
+  this.url = yelpStuff.url;
+
+}
 
 client.connect()
   .then(() => {
