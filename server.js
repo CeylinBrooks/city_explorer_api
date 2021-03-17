@@ -14,6 +14,7 @@ const client = new pg.Client(process.env.DATABASE_URL);
 client.on('error', error => console.log(error));
 
 const PORT = process.env.PORT || 3001;
+
 const GEOCODE_API_KEY = process.env.GEOCODE_API_KEY;
 const WEATHER_API_KEY = process.env.WEATHER_API_KEY;
 const PARKS_API_KEY = process.env.PARKS_API_KEY;
@@ -63,8 +64,8 @@ function handleLocation(req, res) {
 
 
 function handleWeather(req, res) {
-  let lat = req.query.latitude;
-  let lon = req.query.longitude;
+  const lat = req.query.latitude;
+  const lon = req.query.longitude;
   console.log(lat, lon);
   const url = `https://api.weatherbit.io/v2.0/forecast/daily?key=${WEATHER_API_KEY}&lat=${lat}&lon=${lon}`;
   superagent.get(url).then(returnedData => {
@@ -80,13 +81,14 @@ function handleWeather(req, res) {
 }
 
 function handleParks(req, res) {
-  const park = req.query.formattted_query;
+  const park = req.query.formatted_query;
   const url = `https://developer.nps.gov/api/v1/parks?limit=2&start=0&q=${park}&sort=&api_key=${PARKS_API_KEY}`;
   superagent.get(url)
     .then(returnedPark => {
       const parksArray = returnedPark.body.data;
       const output = parksArray.map(parkValue => new Park(parkValue));
       res.send(output);
+      console.log(output);
     })
     .catch(error => {
       console.log(error);
@@ -96,12 +98,12 @@ function handleParks(req, res) {
 
 function handleMovies(req, res) {
   const movie = req.query.search_query;
-  const url = `https://api.themoviedb.org/3/movie/550?api_key=${MOVIE_API_KEY}&query=${movie}`;
+  const url = `https://api.themoviedb.org/3/search/movie?api_key=${MOVIE_API_KEY}&query=${movie}`;
   superagent.get(url)
     .then(returnedData => {
       console.log(returnedData.body);
       const movieArray = returnedData.body.results;
-      const output = movieArray.results.map(moviesInfo => new Movie(moviesInfo));
+      const output = movieArray.map(moviesInfo => new Movie(moviesInfo));
       res.send(output);
     })
     .catch(error => {
@@ -136,8 +138,8 @@ function Location(locationData, cityDescrip) {
 }
 
 function Weather(jsonData, weatherStatus) {
-  this.search_query = jsonData.weather.desription;
-  this.formattted_query = weatherStatus;
+  this.search_query = jsonData.weather.description;
+  this.formatted_query = weatherStatus;
   this.latitude = jsonData.lat;
   this.longitude = jsonData.lon;
 
@@ -155,9 +157,9 @@ function Movie(movieData) {
 
 function Park(parkInformation) {
   this.name = parkInformation.name;
-  this.address = `${parkInformation}.addresses[0].line1} ${parkInformation[0].city} ${parkInformation}.addresses[0].stateCode} ${parkInformation.addresses[0].postalCode}`;
+  this.address = `${parkInformation}.addresses[0].line1} ${parkInformation[0]} ${parkInformation}.addresses[0].stateCode} ${parkInformation.addresses[0].postalCode}`;
   this.fee = parkInformation = parkInformation.desription;
-  this.url = parkInformation.url;
+  // this.url = parkInformation.url;
 }
 
 
