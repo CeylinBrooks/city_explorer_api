@@ -138,10 +138,8 @@ function Location(locationData, cityDescrip) {
 }
 
 function Weather(jsonData, weatherStatus) {
-  this.search_query = jsonData.weather.description;
-  this.formatted_query = weatherStatus;
-  this.latitude = jsonData.lat;
-  this.longitude = jsonData.lon;
+  this.forecast = jsonData.weather.description;
+  this.time = jsonData.datetime;
 
 }
 
